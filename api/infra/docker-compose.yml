@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:8.3.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+    networks:
+      - app-network
+
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin
+    container_name: "phpmyadmin"
+    restart: always
+    ports:
+      - 9090:80
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+    networks:
+      - app-network
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4563-4584:4563-4584"
+      - "8055:8080"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "./.localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+  #     volumes:
+  #       - db:/var/lib/mysql
+  #       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  # volumes:
+  #   db:
+  #     driver: local
