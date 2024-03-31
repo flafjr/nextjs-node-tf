@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "name": "ROOT",
+      "path": "../"
+    },
+    {
+      "name": "api",
+      "path": "../api"
+    },
+    {
+      "name": "app",
+      "path": "../app"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "node_modules/": true,
+      "packages/": true
+    }
+  },
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint", "orta.vscode-jest"]
+  }
+}
